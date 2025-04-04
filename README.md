@@ -38,7 +38,7 @@ After installing the mod, it will automatically activate when you launch GHPC th
 
 ## Support
 
-If you encounter any issues or have any suggestions, please open an [issue](https://github.com/your_username/your_repo/issues) on this repository.
+If you encounter any issues or have any suggestions, please open an [issue]([https://github.com/your_username/your_repo/issues](https://github.com/AESMSIX-OFFICIAL/GraphicMod/issues)) on this repository.
 
 ## Contributing
 
