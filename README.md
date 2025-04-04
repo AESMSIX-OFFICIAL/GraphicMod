@@ -1,7 +1,7 @@
 # Ultra Low Graphic Mod for GHPC
 
-[![Version](https://img.shields.io/badge/Version-1.0.2-blue.svg)](https://github.com/your_username/your_repo/releases/tag/v1.0.2)
-[![MelonLoader](https://img.shields.io/badge/Requires-MelonLoader-brightgreen.svg)](https://melonloader.xyz/)
+[![Version](https://img.shields.io/badge/Version-1.0.2-blue.svg)](https://github.com/AESMSIX-OFFICIAL/GraphicMod/releases/tag/Release)
+[![MelonLoader](https://img.shields.io/badge/Requires-MelonLoader-brightgreen.svg)](https://github.com/LavaGang/MelonLoader)
 [![Game](https://img.shields.io/badge/Game-GHPC-orange.svg)](https://store.steampowered.com/app/1634520/Gunner_HEAT_PC/)
 
 This mod is for the game Gunner, HEAT, PC! (GHPC) and drastically reduces graphics quality to improve performance, especially on low-spec systems. This mod uses MelonLoader.
@@ -16,10 +16,10 @@ This mod is for the game Gunner, HEAT, PC! (GHPC) and drastically reduces graphi
 ## Installation
 
 1.  Make sure you have **MelonLoader** installed for GHPC. You can download it from the [official MelonLoader website](https://github.com/LavaGang/MelonLoader). Follow the installation instructions provided there.
-2.  Download the `UltraLowGraphic.dll` file from the [releases page](https://github.com/AESMSIX-OFFICIAL/GraphicMod/releases/tag/Release).
+2.  Download the `GraphicMod.dll` file from the [releases page](https://github.com/AESMSIX-OFFICIAL/GraphicMod/releases/tag/Release).
 3.  Locate your GHPC installation folder. It's usually located at `C:\Program Files (x86)\Steam\steamapps\common\GHPC`.
 4.  Open the `Mods` folder inside the GHPC installation folder. If the `Mods` folder doesn't exist, create a new folder named `Mods`.
-5.  Copy the `UltraLowGraphic.dll` file into the `Mods` folder.
+5.  Copy the `GraphicMod.dll` file into the `Mods` folder.
 
 ## Usage
 
