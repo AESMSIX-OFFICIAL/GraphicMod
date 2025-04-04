@@ -1,6 +1,7 @@
-﻿using MelonLoader;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.PostProcessing; 
 
 [assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.0.2", "AESMSIX")]
 [assembly: MelonGame("Radian Simulations LLC", "GHPC")]
@@ -9,24 +10,20 @@ namespace LowQualityMod
 {
     public class LowQualityModMain : MelonMod
     {
-        private bool lowQualityApplied = false;
-
         public override void OnInitializeMelon()
         {
-            MelonLogger.Msg("Low Quality Mod loaded successfully. Setting graphics settings and removing non-essential objects..."); // Prints a log message that the mod loaded successfully
+            MelonLogger.Msg("Low Quality Mod loaded successfully. Setting graphics settings and removing non-essential objects...");
             ApplyLowQualitySettings();
             RemoveNonEssentialObjects();
-            lowQualityApplied = true;
         }
 
         public override void OnUpdate()
         {
             if (Input.GetKeyDown(KeyCode.F9))
             {
-                MelonLogger.Msg("F9 pressed! Re-running graphics settings,and removing environmental objects..."); // Prints a log message when F9 is pressed
+                MelonLogger.Msg("F9 pressed! Re-running graphics settings and removing environmental objects...");
                 ApplyLowQualitySettings();
                 RemoveNonEssentialObjects();
-                lowQualityApplied = true;
             }
         }
 
@@ -34,51 +31,52 @@ namespace LowQualityMod
         {
             MelonLogger.Msg($"New scene loaded: {sceneName} (Index: {buildIndex}). Applying low quality settings.");
             ApplyLowQualitySettings();
-            lowQualityApplied = true;
         }
 
         private void ApplyLowQualitySettings()
         {
-            QualitySettings.masterTextureLimit = 3; // Limits the maximum texture resolution (higher is better, low value means worse graphics)
-            QualitySettings.pixelLightCount = 0; // Sets the number of pixel lights to 0 (higher is better, 0 means none, worse graphics)
-            QualitySettings.antiAliasing = 0; // Disables anti-aliasing (higher values smooth out edges, 0 means none, worse graphics)
-            QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable; // Disables anisotropic filtering (improves texture sharpness at oblique angles, Disable means worse graphics)
-            QualitySettings.lodBias = 0.5f; // Reduces the level of detail bias (lower values make objects appear more detailed up close, low value means worse graphics)
-            QualitySettings.shadows = ShadowQuality.Disable; // Disables shadows (Disable means no shadows, worse graphics)
-            QualitySettings.shadowDistance = 0f; // Sets the shadow render distance to 0 (higher is further shadows are visible, 0 means none, worse graphics)
-            QualitySettings.realtimeReflectionProbes = false; // Disables real-time reflection probes (Disable means no real-time reflections, worse graphics)
-            QualitySettings.vSyncCount = 0; // Disables VSync (prevents screen tearing, but disabling it can make graphics look rougher)
-            Shader.globalMaximumLOD = 100; // Limits the maximum shader level of detail (lower values reduce shader detail, low value means worse graphics)
-            QualitySettings.softParticles = false; // Disables soft particles (Disable means particles look harsher, worse graphics)
-            QualitySettings.softVegetation = false; // Disables soft vegetation (Disable means vegetation looks harsher, worse graphics)
-            QualitySettings.shadowResolution = ShadowResolution.Low; // Sets the shadow resolution to low (lower resolution means worse shadow quality, worse graphics)
-            QualitySettings.shadowCascades = 0; // Sets the number of shadow cascades to 0 (higher values improve distant shadow quality, 0 means worse graphics)
-            ScalableBufferManager.ResizeBuffers(0.75f, 0.75f); // Reduces the render buffer resolution (lower resolution means worse graphics)
-            Application.targetFrameRate = 60; // Sets the target frame rate to 60 FPS (doesn't directly impact graphics quality, but performance)
-            RenderSettings.fog = false; // Disables fog (Disable means no fog effect, graphics might look less realistic)
-            RenderSettings.skybox = null; // Removes the skybox (null means no background sky, graphics might look empty)
-            Terrain[] terrains = GameObject.FindObjectsOfType<Terrain>(); // Gets all Terrain objects in the scene
-            foreach (Terrain terrain in terrains) // Loops through each Terrain object
+            QualitySettings.masterTextureLimit = 3;
+            QualitySettings.pixelLightCount = 0;
+            QualitySettings.antiAliasing = 0;
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable;
+            QualitySettings.lodBias = 0.5f;
+            QualitySettings.shadows = ShadowQuality.Disable;
+            QualitySettings.shadowDistance = 0f;
+            QualitySettings.realtimeReflectionProbes = false;
+            QualitySettings.vSyncCount = 0;
+            Shader.globalMaximumLOD = 100;
+            QualitySettings.softParticles = false;
+            QualitySettings.softVegetation = false;
+            QualitySettings.shadowResolution = ShadowResolution.Low;
+            QualitySettings.shadowCascades = 0;
+            ScalableBufferManager.ResizeBuffers(0.5f, 0.5f);
+            Application.targetFrameRate = 60;
+            RenderSettings.fog = false;
+            RenderSettings.skybox = null;
+
+            Terrain[] terrains = GameObject.FindObjectsOfType<Terrain>();
+            foreach (Terrain terrain in terrains)
             {
-                terrain.detailObjectDensity = 0.1f; // Reduces the density of detail objects (like grass) (lower density means fewer details, worse graphics)
-                terrain.treeBillboardDistance = 10f; // Reduces the billboard distance for trees (lower distance means trees turn into sprites sooner, worse graphics)
-                terrain.detailObjectDistance = 20f; // Reduces the render distance for detail objects (lower distance means detail objects are not visible from far away, worse graphics)
-                terrain.heightmapPixelError = 15; // Increases the heightmap pixel error tolerance (higher error means less detailed terrain, worse graphics)
-                if (terrain.materialTemplate != null && terrain.materialTemplate.HasProperty("_MainTex")) // Checks if the terrain material has a main texture
+                terrain.detailObjectDensity = 0.1f;
+                terrain.treeBillboardDistance = 10f;
+                terrain.detailObjectDistance = 20f;
+                terrain.heightmapPixelError = 15;
+                if (terrain.materialTemplate != null && terrain.materialTemplate.HasProperty("_MainTex"))
                 {
-                    terrain.materialTemplate.SetTexture("_MainTex", null); // Removes the main texture of the terrain (null means the terrain will look plain, worse graphics)
+                    terrain.materialTemplate.SetTexture("_MainTex", null);
                 }
             }
-            UnityEngine.Rendering.PostProcessing.PostProcessVolume[] ppVolumes = GameObject.FindObjectsOfType<UnityEngine.Rendering.PostProcessing.PostProcessVolume>(); // Gets all post-processing volumes
-            foreach (var volume in ppVolumes) // Loops through each post-processing volume
+
+            PostProcessVolume[] ppVolumes = GameObject.FindObjectsOfType<PostProcessVolume>();
+            foreach (var volume in ppVolumes)
             {
-                volume.enabled = false; // Disables post-processing (Disable means no effects like bloom, color correction, etc., worse graphics)
+                volume.enabled = false;
             }
 
-            RenderPipelineAsset lowQualityPipeline = Resources.Load<RenderPipelineAsset>("LowQualityRenderPipeline"); // Tries to load a low quality render pipeline asset
-            if (lowQualityPipeline != null && GraphicsSettings.renderPipelineAsset != lowQualityPipeline) // Checks if the asset was loaded and is not already in use
+            RenderPipelineAsset lowQualityPipeline = Resources.Load<RenderPipelineAsset>("LowQualityRenderPipeline");
+            if (lowQualityPipeline != null && GraphicsSettings.renderPipelineAsset != lowQualityPipeline)
             {
-                GraphicsSettings.renderPipelineAsset = lowQualityPipeline; // Switches the render pipeline asset to the low quality one (render pipeline significantly impacts overall graphics quality)
+                GraphicsSettings.renderPipelineAsset = lowQualityPipeline;
             }
 
             Camera mainCamera = Camera.main;
@@ -89,7 +87,7 @@ namespace LowQualityMod
             MelonLogger.Msg("Graphics quality settings have been applied with additional parameters for higher FPS.");
         }
 
-        private void RemoveNonEssentialObjects() // Method to remove non-essential game objects
+        private void RemoveNonEssentialObjects()
         {
             string[] keywords = new string[] { "Smoke", "Tree", "Effect", "Fog", "Grass", "Bush" };
             int removedCount = 0;
@@ -102,7 +100,7 @@ namespace LowQualityMod
                 {
                     foreach (string keyword in keywords)
                     {
-                        if (obj.name != null && obj.name.Contains(keyword))
+                        if (!string.IsNullOrEmpty(obj.name) && obj.name.Contains(keyword))
                         {
                             Object.Destroy(obj);
                             removedCount++;
@@ -111,7 +109,7 @@ namespace LowQualityMod
                     }
                 }
             }
-            MelonLogger.Msg($"{removedCount} non-essential objects have been removed."); // Prints a log message with the number of removed objects
+            MelonLogger.Msg($"{removedCount} non-essential objects have been removed.");
         }
     }
-} //CAN YOU FIX THIS????
+}
