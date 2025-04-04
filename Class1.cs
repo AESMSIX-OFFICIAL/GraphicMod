@@ -42,14 +42,12 @@ namespace LowQualityMod
             QualitySettings.shadows = ShadowQuality.Disable;
             QualitySettings.shadowDistance = 0f;
             QualitySettings.realtimeReflectionProbes = false;
-            QualitySettings.vSyncCount = 0;
             Shader.globalMaximumLOD = 100;
             QualitySettings.softParticles = false;
             QualitySettings.softVegetation = false;
             QualitySettings.shadowResolution = ShadowResolution.Low;
             QualitySettings.shadowCascades = 0;
-            ScalableBufferManager.ResizeBuffers(0.5f, 0.5f);
-            Application.targetFrameRate = 60;
+            ScalableBufferManager.ResizeBuffers(0.1f, 0.1f);
             RenderSettings.fog = false;
             RenderSettings.skybox = null;
 
@@ -57,9 +55,9 @@ namespace LowQualityMod
             foreach (Terrain terrain in terrains)
             {
                 terrain.detailObjectDensity = 0.1f;
-                terrain.treeBillboardDistance = 10f;
-                terrain.detailObjectDistance = 20f;
-                terrain.heightmapPixelError = 15;
+                terrain.treeBillboardDistance = 5f;
+                terrain.detailObjectDistance = 10f;
+                terrain.heightmapPixelError = 20;
                 if (terrain.materialTemplate != null && terrain.materialTemplate.HasProperty("_MainTex"))
                 {
                     terrain.materialTemplate.SetTexture("_MainTex", null);
@@ -72,11 +70,6 @@ namespace LowQualityMod
                 volume.enabled = false;
             }
 
-            Camera mainCamera = Camera.main;
-            if (mainCamera != null)
-            {
-                mainCamera.useOcclusionCulling = true;
-            }
             MelonLogger.Msg("Graphics quality settings have been applied with additional parameters for higher FPS.");
         }
 
