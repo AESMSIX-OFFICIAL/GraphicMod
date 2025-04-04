@@ -57,7 +57,6 @@ namespace LowQualityMod
             Application.targetFrameRate = 60; // Sets the target frame rate to 60 FPS (doesn't directly impact graphics quality, but performance)
             RenderSettings.fog = false; // Disables fog (Disable means no fog effect, graphics might look less realistic)
             RenderSettings.skybox = null; // Removes the skybox (null means no background sky, graphics might look empty)
-            ScalableBufferManager.ResizeBuffers(0.5f, 0.5f); // Further reduces the render buffer resolution (lower resolution means worse graphics)
             Terrain[] terrains = GameObject.FindObjectsOfType<Terrain>(); // Gets all Terrain objects in the scene
             foreach (Terrain terrain in terrains) // Loops through each Terrain object
             {
