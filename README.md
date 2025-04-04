@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/Version-1.0.2-blue.svg)](https://github.com/AESMSIX-OFFICIAL/GraphicMod/releases/tag/Release)
 [![MelonLoader](https://img.shields.io/badge/Requires-MelonLoader-brightgreen.svg)](https://github.com/LavaGang/MelonLoader)
-[![Game](https://img.shields.io/badge/Game-GHPC-orange.svg)](https://store.steampowered.com/app/1634520/Gunner_HEAT_PC/)
+[![Game](https://img.shields.io/badge/Game-GHPC-orange.svg)](https://store.steampowered.com/app/1705180/Gunner_HEAT_PC/)
 
 This mod is for the game Gunner, HEAT, PC! (GHPC) and drastically reduces graphics quality to improve performance, especially on low-spec systems. This mod uses MelonLoader.
 
