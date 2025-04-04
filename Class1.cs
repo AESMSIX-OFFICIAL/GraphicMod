@@ -1,6 +1,5 @@
 using MelonLoader;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing; 
 
 [assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.0.2", "AESMSIX")]
@@ -73,16 +72,10 @@ namespace LowQualityMod
                 volume.enabled = false;
             }
 
-            RenderPipelineAsset lowQualityPipeline = Resources.Load<RenderPipelineAsset>("LowQualityRenderPipeline");
-            if (lowQualityPipeline != null && GraphicsSettings.renderPipelineAsset != lowQualityPipeline)
-            {
-                GraphicsSettings.renderPipelineAsset = lowQualityPipeline;
-            }
-
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
             {
-                mainCamera.useOcclusionCulling = false;
+                mainCamera.useOcclusionCulling = true;
             }
             MelonLogger.Msg("Graphics quality settings have been applied with additional parameters for higher FPS.");
         }
