@@ -1,48 +1,57 @@
+using System;
+using System.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing; 
+using UnityEngine.Rendering.PostProcessing;
 
-[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.0.2", "AESMSIX")]
+[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.0.4", "AESMSIX")]
 [assembly: MelonGame("Radian Simulations LLC", "GHPC")]
 
 namespace LowQualityMod
 {
     public class LowQualityModMain : MelonMod
     {
+        Terrain[] terrains = GameObject.FindObjectsOfType<Terrain>();
+        Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
+        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+
         public override void OnInitializeMelon()
         {
-            MelonLogger.Msg("Low Quality Mod loaded successfully. Setting graphics settings and removing non-essential objects...");
             ApplyLowQualitySettings();
-            RemoveNonEssentialObjects();
+            ConfigureMaterials(); // Materialkonfig() -> ConfigureMaterials()
+            DeleteNonEssentialObjectsDuringGameplay();
+            MelonLogger.Msg("Low Quality Mod loaded successfully. Setting graphics settings and removing non-essential objects...");
         }
 
         public override void OnUpdate()
         {
             if (Input.GetKeyDown(KeyCode.F9))
             {
-                MelonLogger.Msg("F9 pressed! Re-running graphics settings and removing environmental objects...");
+
                 ApplyLowQualitySettings();
-                RemoveNonEssentialObjects();
+                ConfigureMaterials(); // Materialkonfig() -> ConfigureMaterials()
+                DeleteNonEssentialObjectsDuringGameplay();
+                MelonLogger.Msg("F9 pressed! Re-running graphics settings and removing environmental objects...");
             }
         }
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            MelonLogger.Msg($"New scene loaded: {sceneName} (Index: {buildIndex}). Applying low quality settings.");
             ApplyLowQualitySettings();
+            MelonLogger.Msg($"New scene loaded: {sceneName} (Index: {buildIndex}). Applying low quality settings.");
         }
 
         private void ApplyLowQualitySettings()
         {
-            QualitySettings.masterTextureLimit = 3;
+            QualitySettings.globalTextureMipmapLimit = 4;
             QualitySettings.pixelLightCount = 0;
             QualitySettings.antiAliasing = 0;
             QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable;
-            QualitySettings.lodBias = 0.5f;
+            QualitySettings.lodBias = 0.1f;
             QualitySettings.shadows = ShadowQuality.Disable;
             QualitySettings.shadowDistance = 0f;
             QualitySettings.realtimeReflectionProbes = false;
-            Shader.globalMaximumLOD = 100;
+            QualitySettings.maximumLODLevel = 0;
             QualitySettings.softParticles = false;
             QualitySettings.softVegetation = false;
             QualitySettings.shadowResolution = ShadowResolution.Low;
@@ -50,52 +59,97 @@ namespace LowQualityMod
             ScalableBufferManager.ResizeBuffers(0.1f, 0.1f);
             RenderSettings.fog = false;
             RenderSettings.skybox = null;
+            Time.timeScale = 1f;
+            Time.maximumDeltaTime = 0.1f;
+            MelonLogger.Msg("Graphics quality settings have been applied.");
+        }
 
-            Terrain[] terrains = GameObject.FindObjectsOfType<Terrain>();
+        private void ConfigureMaterials() 
+        {
             foreach (Terrain terrain in terrains)
             {
                 terrain.detailObjectDensity = 0.1f;
-                terrain.treeBillboardDistance = 5f;
-                terrain.detailObjectDistance = 10f;
-                terrain.heightmapPixelError = 20;
+                terrain.treeBillboardDistance = 10f;
+                terrain.detailObjectDistance = 15f;
+                terrain.heightmapPixelError = 25;
                 if (terrain.materialTemplate != null && terrain.materialTemplate.HasProperty("_MainTex"))
                 {
                     terrain.materialTemplate.SetTexture("_MainTex", null);
                 }
             }
-
-            PostProcessVolume[] ppVolumes = GameObject.FindObjectsOfType<PostProcessVolume>();
-            foreach (var volume in ppVolumes)
+            foreach (Light light in GameObject.FindObjectsOfType<Light>())
             {
-                volume.enabled = false;
+                if (light.shadows != LightShadows.None)
+                    light.shadows = LightShadows.None;
             }
+            foreach (Material mat in Resources.FindObjectsOfTypeAll<Material>())
+            {
+                if (mat != null)
+                {
+                    mat.enableInstancing = true;
+                }
+            }
+            foreach (Camera camera in cameras)
+            {
+                var postProcessingLayer = camera.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessLayer>();
+                if (postProcessingLayer != null)
+                {
+                    postProcessingLayer.enabled = false;
+                }
 
-            MelonLogger.Msg("Graphics quality settings have been applied with additional parameters for higher FPS.");
+                var postProcessingVolume = camera.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>();
+                if (postProcessingVolume != null)
+                {
+                    postProcessingVolume.enabled = false;
+                }
+                var volumes = GameObject.FindObjectsOfType<PostProcessVolume>();
+                foreach (var volume in volumes)
+                {
+                    volume.enabled = false;
+                }
+            }
         }
-
-        private void RemoveNonEssentialObjects()
+        private void DeleteNonEssentialObjectsDuringGameplay()
         {
-            string[] keywords = new string[] { "Smoke", "Tree", "Effect", "Fog", "Grass", "Bush" };
-            int removedCount = 0;
-
             GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+            int deletedCount = 0;
 
             foreach (GameObject obj in allObjects)
             {
-                if (obj != null && obj.activeInHierarchy)
+                if (obj == null)
+                    continue;
+
+                string objName = obj.name.ToLower();
+
+                if (objName.Contains("tree") ||
+                    objName.Contains("dust") || objName.Contains("smoke") ||
+                    objName.Contains("skybox") ||
+                    objName.Contains("wood") || objName.Contains("cloud") ||
+                    objName.Contains("fog") ||
+                    objName.Contains("grass"))
                 {
-                    foreach (string keyword in keywords)
+                    try
                     {
-                        if (!string.IsNullOrEmpty(obj.name) && obj.name.Contains(keyword))
+                        Renderer renderer = obj.GetComponent<Renderer>();
+                        if (renderer != null)
+                            renderer.enabled = false;
+
+                        Renderer[] childRenderers = obj.GetComponentsInChildren<Renderer>();
+                        foreach (Renderer childRenderer in childRenderers)
                         {
-                            Object.Destroy(obj);
-                            removedCount++;
-                            break;
+                            childRenderer.enabled = false;
                         }
+
+                        obj.SetActive(false);
+                        deletedCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        MelonLogger.Msg("Failed to delete object " + obj.name + ": " + ex.Message); // Gagal menghapus objek -> Failed to delete object
                     }
                 }
             }
-            MelonLogger.Msg($"{removedCount} non-essential objects have been removed.");
+            MelonLogger.Msg("Number of objects deleted and forced not to render: " + deletedCount); // Jumlah objek yang dihapus dan dipaksa agar tidak dirender -> Number of objects deleted and forced not to render
         }
     }
 }
