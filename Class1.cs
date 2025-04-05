@@ -4,7 +4,7 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.0.4", "AESMSIX")]
+[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.1.0", "AESMSIX")]
 [assembly: MelonGame("Radian Simulations LLC", "GHPC")]
 
 namespace LowQualityMod
