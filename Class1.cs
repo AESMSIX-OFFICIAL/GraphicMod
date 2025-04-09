@@ -4,7 +4,7 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.1.2", "AESMSIX")]
+[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.1.3", "AESMSIX")]
 [assembly: MelonGame("Radian Simulations LLC", "GHPC")]
 
 namespace LowQualityMod
@@ -121,9 +121,9 @@ namespace LowQualityMod
 
                 if (objName.Contains("tree") || objName.Contains("leaves") ||
                     objName.Contains("dust") || objName.Contains("smoke") ||
-                    objName.Contains("skybox") || objName.Contains("sun") ||
+                    objName.Contains("skybox") ||
                     objName.Contains("cloud") ||
-                    objName.Contains("fog") || 
+                    objName.Contains("fog") || objName.Contains("shadow") ||
                     objName.Contains("grass"))
                 {
                     try
