@@ -4,7 +4,7 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.1.0", "AESMSIX")]
+[assembly: MelonInfo(typeof(LowQualityMod.LowQualityModMain), "Ultra Low Graphic", "1.1.2", "AESMSIX")]
 [assembly: MelonGame("Radian Simulations LLC", "GHPC")]
 
 namespace LowQualityMod
@@ -19,7 +19,6 @@ namespace LowQualityMod
         {
             ApplyLowQualitySettings();
             ConfigureMaterials(); // Materialkonfig() -> ConfigureMaterials()
-            DeleteNonEssentialObjectsDuringGameplay();
             MelonLogger.Msg("Low Quality Mod loaded successfully. Setting graphics settings and removing non-essential objects...");
         }
 
@@ -43,20 +42,19 @@ namespace LowQualityMod
 
         private void ApplyLowQualitySettings()
         {
-            QualitySettings.globalTextureMipmapLimit = 4;
+            QualitySettings.globalTextureMipmapLimit = 15;
             QualitySettings.pixelLightCount = 0;
             QualitySettings.antiAliasing = 0;
             QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable;
-            QualitySettings.lodBias = 0.1f;
+            QualitySettings.lodBias = 0.01f;
             QualitySettings.shadows = ShadowQuality.Disable;
             QualitySettings.shadowDistance = 0f;
             QualitySettings.realtimeReflectionProbes = false;
             QualitySettings.maximumLODLevel = 0;
             QualitySettings.softParticles = false;
             QualitySettings.softVegetation = false;
-            QualitySettings.shadowResolution = ShadowResolution.Low;
             QualitySettings.shadowCascades = 0;
-            ScalableBufferManager.ResizeBuffers(0.1f, 0.1f);
+            ScalableBufferManager.ResizeBuffers(0.01f, 0.01f);
             RenderSettings.fog = false;
             RenderSettings.skybox = null;
             Time.timeScale = 1f;
@@ -69,9 +67,9 @@ namespace LowQualityMod
             foreach (Terrain terrain in terrains)
             {
                 terrain.detailObjectDensity = 0.1f;
-                terrain.treeBillboardDistance = 10f;
-                terrain.detailObjectDistance = 15f;
-                terrain.heightmapPixelError = 25;
+                terrain.treeBillboardDistance = 0.1f;
+                terrain.detailObjectDistance = 10f;
+                terrain.heightmapPixelError = 55;
                 if (terrain.materialTemplate != null && terrain.materialTemplate.HasProperty("_MainTex"))
                 {
                     terrain.materialTemplate.SetTexture("_MainTex", null);
@@ -121,11 +119,11 @@ namespace LowQualityMod
 
                 string objName = obj.name.ToLower();
 
-                if (objName.Contains("tree") ||
+                if (objName.Contains("tree") || objName.Contains("leaves") ||
                     objName.Contains("dust") || objName.Contains("smoke") ||
-                    objName.Contains("skybox") ||
-                    objName.Contains("wood") || objName.Contains("cloud") ||
-                    objName.Contains("fog") ||
+                    objName.Contains("skybox") || objName.Contains("sun") ||
+                    objName.Contains("cloud") ||
+                    objName.Contains("fog") || 
                     objName.Contains("grass"))
                 {
                     try
